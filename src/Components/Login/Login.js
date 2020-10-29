@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import Form from "./Form";
-import {loginRequests} from "../Requests/loginRequests";
-import {getDecodedToken, storeJwtToken, storeUserPermissions} from "../helpers/AuthHelper";
-
+import {loginRequests } from "../../Requests/loginRequests";
+import { storeJwtToken } from "../../helpers/AuthHelper";
+import { useHistory } from 'react-router-dom'
 
 const Login = () => {
 
@@ -10,18 +10,17 @@ const Login = () => {
     email: '',
     password: ''
   });
+  const history = useHistory();
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
     // 'superadministrador@acmeinc.com', '123'
     loginRequests(user.email, user.password)
       .then(response => {
-        storeJwtToken(response.token);
-        storeUserPermissions(response.permisos);
-      }).finally(() => {
-      let userLogged = getDecodedToken()
-      setUser({...user, ...userLogged})
-    })
+        storeJwtToken(response.access_token);
+        history.push('/')
+        //storeUserPermissions(response.permisos);
+      })
   }
 
   const handleOnChange = (event) => {

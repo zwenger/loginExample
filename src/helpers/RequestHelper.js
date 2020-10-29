@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {getJwtToken, isAuthenticated} from "./AuthHelper";
 
 axios.defaults.baseURL = `${window.location.protocol}//localhost:8000/api/`;
 
@@ -16,6 +17,15 @@ export const put = (path, data = {}, dispatch) => axios.put(path, data, {dispatc
 export const destroy = (path, dispatch) => axios.delete(path, {dispatch});
 
 export const patch = (path, data = {}, dispatch) => axios.patch(path, data, {dispatch});
+
+axios.interceptors.request.use((config) => {
+  console.log('hiciste un post man')
+  if (isAuthenticated()) config.headers.Authorization = 'Bearer ' + getJwtToken();
+  return config;
+}, (error) => {
+  console.log('el post que hiciste fallo')
+  return Promise.reject(error);
+});
 
 export default {
   get,
